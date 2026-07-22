@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Download, Sparkles, Folder, Award, GraduationCap, CheckCircle, Eye, X } from 'lucide-react';
+import { ArrowRight, Download, Sparkles, Folder, Award, GraduationCap, Globe, Eye, X, FileText, CheckCircle } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import { heroData, statsData, educationData } from '../../data/portfolio';
+import { heroData, statsData, educationData, experienceData, skillsData, certificationsData } from '../../data/portfolio';
 
 const Hero = () => {
   const [showResumeModal, setShowResumeModal] = useState(false);
@@ -12,7 +12,7 @@ const Hero = () => {
       case 'Folder': return <Folder size={20} className="text-accent" />;
       case 'Award': return <Award size={20} className="text-accent" />;
       case 'GraduationCap': return <GraduationCap size={20} className="text-accent" />;
-      case 'CheckCircle': return <CheckCircle size={20} className="text-accent" />;
+      case 'Globe': return <Globe size={20} className="text-accent" />;
       default: return <Sparkles size={20} className="text-accent" />;
     }
   };
@@ -62,7 +62,7 @@ const Hero = () => {
             {/* CTA Action Buttons */}
             <div className="flex flex-wrap items-center gap-4">
               <a href="#projects" className="btn-primary group shadow-lg shadow-accent/15">
-                Explore Projects
+                View Projects
                 <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </a>
               
@@ -70,7 +70,7 @@ const Hero = () => {
                 onClick={() => setShowResumeModal(true)}
                 className="btn-secondary group flex items-center gap-2"
               >
-                <Eye size={18} className="group-hover:text-accent transition-colors" />
+                <FileText size={18} className="group-hover:text-accent transition-colors" />
                 View & Download Resume
               </button>
 
@@ -97,7 +97,7 @@ const Hero = () => {
             </div>
           </motion.div>
 
-          {/* Interactive Metric Cards */}
+          {/* Metric Cards */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -121,68 +121,106 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Resume Quick Preview Modal */}
+      {/* Complete Interactive Resume Modal */}
       <AnimatePresence>
         {showResumeModal && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto"
           >
             <motion.div 
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="glass-card max-w-xl w-full p-6 space-y-6 relative bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800"
+              className="glass-card max-w-3xl w-full p-6 sm:p-8 space-y-6 relative bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 my-8 max-h-[90vh] overflow-y-auto"
             >
               <button 
                 onClick={() => setShowResumeModal(false)}
                 className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg transition-colors"
+                title="Close"
               >
                 <X size={20} />
               </button>
 
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-accent uppercase tracking-wider">Resume Summary</span>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                  Ajay S — Data Analyst & Developer
+              {/* Resume Header */}
+              <div className="border-b border-slate-200 dark:border-slate-800 pb-4 space-y-2">
+                <h3 className="text-3xl font-bold text-slate-900 dark:text-white">
+                  AJAY S
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  {educationData.degree} ({educationData.period}) · CGPA: {educationData.cgpa}
+                <p className="text-accent font-semibold text-sm sm:text-base">
+                  AI Engineer / Data Analyst
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 flex flex-wrap gap-4">
+                  <span>📞 {heroData.socials.phone}</span>
+                  <span>✉️ {heroData.socials.email}</span>
+                  <span>📍 {heroData.socials.location}</span>
                 </p>
               </div>
 
-              <div className="space-y-3 bg-slate-50 dark:bg-slate-950 p-4 rounded-lg text-sm text-slate-700 dark:text-slate-300">
-                <div className="font-semibold text-xs text-slate-400 uppercase">Core Highlights</div>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent font-bold">✓</span>
-                    <span>Hands-on experience with Python, SQL, Power BI, and Generative AI / RAG.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent font-bold">✓</span>
-                    <span>6+ Industry Certifications from SAP, Oracle, and IBM.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent font-bold">✓</span>
-                    <span>Experience with Google Cloud Platform (GCP) and real-world EDA dashboards.</span>
-                  </li>
-                </ul>
+              {/* Summary */}
+              <div>
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Professional Summary</h4>
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-950 p-3.5 rounded-lg border border-slate-200/60 dark:border-slate-800/60">
+                  Aspiring AI Engineer / Data Analyst with hands-on experience across Python, SQL, Generative AI, and cloud-based application development. Skilled in building RAG pipelines, LLM-powered applications, and Power BI dashboards.
+                </p>
               </div>
 
-              <div className="flex gap-3">
+              {/* Experience Highlights */}
+              <div>
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Internship Experience</h4>
+                <div className="space-y-3">
+                  {experienceData.map((exp, i) => (
+                    <div key={i} className="text-xs sm:text-sm bg-slate-50/60 dark:bg-slate-950/60 p-3 rounded-lg border border-slate-200/50 dark:border-slate-800/50">
+                      <div className="flex justify-between font-semibold text-slate-900 dark:text-white mb-1">
+                        <span>{exp.role} — {exp.company}</span>
+                        <span className="text-slate-400 text-xs">{exp.period}</span>
+                      </div>
+                      <ul className="space-y-1 text-slate-600 dark:text-slate-400 text-xs">
+                        {exp.description.map((d, idx) => (
+                          <li key={idx}>• {d}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Education & Certifications */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Education</h4>
+                  <div className="text-xs sm:text-sm bg-slate-50/60 dark:bg-slate-950/60 p-3 rounded-lg border border-slate-200/50 dark:border-slate-800/50">
+                    <p className="font-bold text-slate-900 dark:text-white">{educationData.degree}</p>
+                    <p className="text-slate-600 dark:text-slate-400">{educationData.institution}</p>
+                    <p className="text-accent font-semibold mt-1">CGPA: {educationData.cgpa}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Certifications</h4>
+                  <div className="text-xs sm:text-sm bg-slate-50/60 dark:bg-slate-950/60 p-3 rounded-lg border border-slate-200/50 dark:border-slate-800/50 space-y-1">
+                    {certificationsData.map((c, i) => (
+                      <p key={i} className="text-slate-700 dark:text-slate-300">• {c.title}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex flex-wrap gap-3 pt-2">
                 <a 
                   href={heroData.resumeUrl} 
                   download="Ajay_S_Resume.pdf"
-                  className="btn-primary flex-grow justify-center"
+                  className="btn-primary flex-grow justify-center py-3"
                 >
                   <Download size={18} className="mr-2" />
-                  Download Resume (PDF)
+                  Download Resume PDF
                 </a>
                 <button 
                   onClick={() => setShowResumeModal(false)}
-                  className="btn-secondary px-5"
+                  className="btn-secondary px-6 py-3"
                 >
                   Close
                 </button>

@@ -1,10 +1,10 @@
 export const heroData = {
   name: "Ajay S",
-  tagline: "Data Analyst & Python Developer",
-  subTagline: "Building Data-Driven Insights, ML Pipelines & AI-Powered Solutions",
-  intro: "Aspiring Data Analyst and Python Developer with hands-on experience in exploratory data analysis (EDA), interactive Power BI dashboards, machine learning, and full-stack AI applications.",
+  tagline: "AI Engineer & Data Analyst",
+  subTagline: "Generative AI | LLMs | RAG Pipelines | Power BI | Data Analytics",
+  intro: "Aspiring AI Engineer / Data Analyst with hands-on experience across Python, SQL, Generative AI, and cloud-based application development. Skilled in building RAG pipelines, LLM-powered applications, and Power BI dashboards.",
   resumeUrl: "/resume.pdf",
-  availability: "Open to Data Analyst & Python Developer Roles",
+  availability: "Open for AI Engineer & Data Analyst Roles",
   socials: {
     github: "https://github.com/ajay-5001",
     linkedin: "https://linkedin.com/in/ajay-s-5b7871417",
@@ -15,52 +15,58 @@ export const heroData = {
 };
 
 export const statsData = [
-  { label: "Data & AI Projects", value: "5+", icon: "Folder" },
+  { label: "Projects Completed", value: "3", icon: "Folder" },
   { label: "Industry Certifications", value: "6", icon: "Award" },
   { label: "Academic CGPA", value: "8.2 / 10", icon: "GraduationCap" },
-  { label: "Data Quality & Accuracy", value: "100%", icon: "CheckCircle" }
+  { label: "Languages Known", value: "3", icon: "Globe" }
 ];
 
 export const aboutData = {
-  summary: "Data Analyst and Python Developer with hands-on experience across data analytics, machine learning, and full-stack application development. Skilled in Python, SQL, Power BI, and Excel for data cleaning, exploratory data analysis (EDA), and dashboard design, with additional experience building AI/ML solutions using LLMs and Retrieval-Augmented Generation (RAG). Delivered analytics and AI-powered applications through internships and academic projects, with a proven track record of turning raw datasets into actionable business insights.",
+  summary: "Aspiring AI Engineer / Data Analyst with hands-on experience across Python, SQL, Generative AI, and cloud-based application development. Skilled in building Retrieval-Augmented Generation (RAG) pipelines, LLM-powered applications, and Prompt Engineering workflows, alongside strong data analytics foundations in EDA, data cleaning, and Power BI dashboarding. Experienced in developing AI-driven and analytics solutions through internships and academic projects, with working knowledge of REST APIs, vector-based retrieval, and Agile-style iterative development. Passionate about applying AI/ML and data-driven insight to real-world products.",
+  languages: ["English", "Tamil", "Telugu"],
   highlights: [
-    "Expertise in cleaning, transforming, and modeling complex relational & unstructured datasets.",
-    "Proficient in building interactive Power BI & Python analytics dashboards for business KPIs.",
-    "Hands-on experience with Generative AI, Prompt Engineering, and RAG-based AI applications.",
-    "Strong foundation in Cloud Services (GCP), MySQL, MongoDB, and Git version control."
+    "Building Retrieval-Augmented Generation (RAG) pipelines with vector-based retrieval for high accuracy.",
+    "Developing LLM-powered applications, prompt engineering workflows, and LangChain integration.",
+    "Data cleaning, exploratory data analysis (EDA), and interactive Power BI KPI dashboards.",
+    "Cloud application prototyping on Google Cloud Platform (GCP) and REST API development."
   ]
 };
 
 export const skillsData = [
   { 
-    category: "Programming & Web", 
+    category: "Programming Languages", 
     tag: "Languages",
-    skills: ["Python", "SQL", "JavaScript", "HTML5", "CSS3"] 
+    skills: ["Python", "SQL"] 
   },
   { 
-    category: "Frameworks & Libraries", 
-    tag: "Web & ML",
-    skills: ["React.js", "Tailwind CSS", "Framer Motion", "Pandas", "NumPy", "Scikit-Learn"] 
-  },
-  { 
-    category: "Databases & Storage", 
-    tag: "Data",
-    skills: ["MySQL", "MongoDB", "Relational Databases", "Data Lakes"] 
+    category: "AI / Machine Learning / GenAI", 
+    tag: "AI/ML",
+    skills: ["Generative AI", "Large Language Models (LLMs)", "Retrieval-Augmented Generation (RAG)", "Prompt Engineering", "LangChain", "Scikit-learn", "PDF Summarization"] 
   },
   { 
     category: "Data Analytics & Visualization", 
     tag: "Analytics",
-    skills: ["Data Cleaning", "Data Preprocessing", "Exploratory Data Analysis (EDA)", "Statistical Analysis", "Power BI", "Microsoft Excel"] 
+    skills: ["Data Cleaning", "Data Preprocessing", "Exploratory Data Analysis (EDA)", "Statistical Analysis", "Pandas", "NumPy", "Matplotlib", "Power BI", "Microsoft Excel"] 
   },
   { 
-    category: "AI & Machine Learning", 
-    tag: "AI/ML",
-    skills: ["Generative AI", "Prompt Engineering", "LLMs", "Retrieval-Augmented Generation (RAG)", "PDF Summarization"] 
+    category: "Databases", 
+    tag: "Data",
+    skills: ["MySQL", "Relational Databases", "MongoDB", "Vector Database Concepts"] 
   },
   { 
-    category: "Cloud, Tools & Version Control", 
+    category: "Cloud", 
+    tag: "Cloud",
+    skills: ["Google Cloud Platform (GCP)"] 
+  },
+  { 
+    category: "Web Technologies & APIs", 
+    tag: "Web & APIs",
+    skills: ["HTML", "CSS", "React.js", "REST APIs"] 
+  },
+  { 
+    category: "Tools & Practices", 
     tag: "Tools",
-    skills: ["Google Cloud Platform (GCP)", "Git", "GitHub", "VS Code", "EmailJS"] 
+    skills: ["Git", "GitHub", "VS Code", "Agile Methodology"] 
   }
 ];
 
@@ -68,31 +74,31 @@ export const experienceData = [
   {
     role: "Data Analyst Intern",
     company: "Cloud Institution",
-    period: "Jun 2025 – Jul 2025",
+    period: "30 Jun 2025 – 19 Jul 2025",
     type: "Internship",
     description: [
-      "Cleaned and preprocessed multiple raw datasets using Python and SQL, improving data accuracy and consistency by 25% for downstream analytics.",
-      "Performed exploratory data analysis (EDA) and engineered interactive Power BI dashboards to monitor core key performance indicators (KPIs).",
-      "Generated comprehensive data-driven reports supporting strategic decision-making for internal stakeholders."
+      "Cleaned, preprocessed, and analyzed unstructured datasets using Python (Pandas, NumPy), SQL, Excel, and Power BI.",
+      "Performed Exploratory Data Analysis (EDA) and built interactive Power BI dashboards to surface key trends.",
+      "Generated analytical reports to support data-driven business decision-making."
     ]
   },
   {
     role: "Cloud GCP & LLM Intern",
     company: "Feautregen",
-    period: "2025",
+    period: "Internship",
     type: "Internship",
     description: [
-      "Explored Google Cloud Platform (GCP) cloud infrastructure services and applied advanced prompt engineering techniques to optimize LLM performance.",
-      "Prototyped AI-powered cloud micro-applications integrating Generative AI and vector search concepts."
+      "Explored Google Cloud Platform (GCP) services, Large Language Models (LLMs), and Prompt Engineering techniques.",
+      "Worked on AI-based cloud applications and Generative AI proof-of-concept solutions."
     ]
   },
   {
     role: "Data Analytics Trainee",
     company: "Naan Mudhalvan",
-    period: "2024 – 2025",
+    period: "Traineeship",
     type: "Traineeship",
     description: [
-      "Mastered and applied Python, SQL, Excel, and Power BI across hands-on analytics case studies and real-world domain datasets."
+      "Gained practical, project-based experience in Python, SQL, Excel, and Power BI for analytics workflows."
     ]
   }
 ];
@@ -102,54 +108,46 @@ export const projectsData = [
     id: "prepzo-ai",
     title: "PrepzoAI — AI-Powered Learning Assistant",
     category: "AI & LLMs",
-    problem: "Students and researchers struggle to rapidly extract structured insights and answers from extensive multi-page PDF study materials.",
-    solution: "Developed an AI-driven platform for PDF automated summarization, key note generation, and context-aware Q&A utilizing Retrieval-Augmented Generation (RAG) to ensure high answer accuracy.",
-    techStack: ["React.js", "Python", "LLMs", "RAG", "Tailwind CSS", "Git"],
+    problem: "Students and researchers need a fast, context-aware method to summarize and query lengthy study materials and PDFs.",
+    solution: "Developed an AI-based platform for PDF summarization, note generation, and question answering using LLMs and Retrieval-Augmented Generation (RAG) with vector-based retrieval to maximize answer accuracy.",
+    techStack: ["React.js", "Python", "LLMs", "RAG", "REST APIs", "Git"],
     githubUrl: "https://github.com/ajay-5001/prepzoAI",
-    demoUrl: "",
+    demoUrl: "https://prepzo-ai-nu.vercel.app/",
     featured: true
   },
   {
     id: "cricket-analytics",
-    title: "Cricket Performance Analytics Dashboard",
+    title: "Cricket Analytics Dashboard",
     category: "Data Analytics",
-    problem: "Cricket player statistics and match performance metrics were fragmented across raw spreadsheets, making team selection and strategy difficult.",
-    solution: "Designed an interactive Power BI dashboard featuring data cleaning pipelines, player KPI comparison, strike-rate trends, and visual match analytics.",
-    techStack: ["Power BI", "Excel", "Python", "Data Cleaning", "Data Visualization"],
+    problem: "Scattered match and player performance statistics made strategic analysis and player performance evaluation difficult.",
+    solution: "Developed an interactive Power BI dashboard to analyze player and team performance using historical match data. Performed data cleaning, visualization, and KPI analysis using Pandas and Excel.",
+    techStack: ["Power BI", "Excel", "Python", "Pandas", "EDA", "Data Visualization"],
     githubUrl: "https://github.com/ajay-5001/cricket-analysis-project-ajay",
     demoUrl: "",
     featured: true
   },
   {
-    id: "customer-churn",
-    title: "Customer Churn Prediction & Retention Analytics",
-    category: "Data Analytics",
-    problem: "Businesses faced revenue loss due to unforeseen customer attrition without proactive identification of at-risk accounts.",
-    solution: "Built a Python-based exploratory analysis and predictive model classifying churn drivers, generating actionable retention strategies.",
-    techStack: ["Python", "Pandas", "Scikit-Learn", "SQL", "Power BI"],
-    githubUrl: "https://github.com/ajay-5001",
-    demoUrl: "",
-    featured: false
-  },
-  {
-    id: "resume-parser",
-    title: "Automated Resume Parser & Insight Extractor",
-    category: "AI & LLMs",
-    problem: "Recruiters manually screen hundreds of candidate resumes, taking valuable hours and missing key skill correlations.",
-    solution: "Built a Python NLP tool parsing PDF resumes, extracting candidate skills, experience years, and matching relevance against job descriptions.",
-    techStack: ["Python", "Generative AI", "Prompt Engineering", "React.js"],
-    githubUrl: "https://github.com/ajay-5001",
-    demoUrl: "",
-    featured: false
+    id: "developer-portfolio",
+    title: "Developer Portfolio Website",
+    category: "Web & AI",
+    problem: "Needed a clean, modern, and fast single-page portfolio to display AI Engineering and Data Analytics projects with interactive features.",
+    solution: "Built a fully responsive portfolio with React 19, Vite, Tailwind CSS, Framer Motion, and direct contact form auto-reply capabilities.",
+    techStack: ["React.js", "Vite", "Tailwind CSS", "Framer Motion", "EmailJS"],
+    githubUrl: "https://github.com/ajay-5001/Ajay-s-Portfolio",
+    demoUrl: "https://ajay-s-portfolio-nine.vercel.app/",
+    featured: true
   }
 ];
 
 export const educationData = {
-  degree: "Bachelor of Technology in Information Technology",
+  degree: "Bachelor of Technology (Information Technology)",
   institution: "CSI College of Engineering",
   cgpa: "8.2 / 10",
-  period: "2021 – 2025",
-  highlights: ["Specialized in Data Analytics & Software Engineering", "Active contributor to technical workshops and hackathons"]
+  period: "Graduate",
+  highlights: [
+    "Specialized in Information Technology with focus on AI Engineering and Data Analytics.",
+    "Consistently maintained an academic CGPA of 8.2 / 10."
+  ]
 };
 
 export const certificationsData = [
