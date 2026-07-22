@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Award } from 'lucide-react';
+import { Award, ShieldCheck } from 'lucide-react';
 import { certificationsData } from '../../data/portfolio';
 
 const Certifications = () => {
@@ -27,26 +27,36 @@ const Certifications = () => {
       >
         <div className="flex items-center gap-4 mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
-            Certifications
+            Industry Certifications
           </h2>
           <div className="h-px bg-slate-300 dark:bg-slate-700 flex-grow max-w-xs"></div>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {certificationsData.map((cert, index) => (
-            <motion.div 
-              key={index}
-              variants={itemVariants}
-              className="glass-card p-6 flex items-start gap-4 group cursor-default"
-            >
-              <div className="shrink-0 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-400 group-hover:text-accent group-hover:bg-accent/10 transition-colors">
-                <Award size={24} />
-              </div>
-              <p className="text-slate-800 dark:text-slate-200 font-medium leading-snug">
-                {cert}
-              </p>
-            </motion.div>
-          ))}
+          {certificationsData.map((cert, index) => {
+            const title = typeof cert === 'object' ? cert.title : cert;
+            const issuer = typeof cert === 'object' ? cert.issuer : 'Professional';
+
+            return (
+              <motion.div 
+                key={index}
+                variants={itemVariants}
+                className="glass-card p-6 flex items-start gap-4 group cursor-default hover:border-accent/40 transition-all"
+              >
+                <div className="shrink-0 p-3 bg-accent/10 rounded-xl text-accent group-hover:scale-110 transition-transform">
+                  <Award size={24} />
+                </div>
+                <div className="space-y-1">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    <ShieldCheck size={12} className="text-accent" /> {issuer}
+                  </span>
+                  <p className="text-slate-800 dark:text-slate-200 font-semibold leading-snug text-sm sm:text-base">
+                    {title}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </motion.div>
     </section>
