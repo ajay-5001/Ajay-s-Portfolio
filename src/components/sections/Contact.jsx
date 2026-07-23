@@ -1,33 +1,31 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, Send, Loader2, CheckCircle, XCircle, Copy, Check, Sparkles, ShieldCheck } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import emailjs from '@emailjs/browser';
 import { heroData } from '../../data/portfolio';
 
-// Default EmailJS keys (can be overridden by .env variables)
-const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
-const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
-const EMAILJS_AUTO_REPLY_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_AUTO_REPLY_TEMPLATE_ID || '';
-const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
-
-// FormSubmit Endpoint Fallback (Direct delivery to ajayselvam1609@gmail.com with autorespond)
-const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/ajayselvam1609@gmail.com';
-
 const Contact = () => {
-  const formRef = useRef();
+  const form = useRef();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
   const [copiedField, setCopiedField] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    from_name: '',
+    from_email: '',
+    company: '',
     subject: '',
     message: ''
   });
+  const [errors, setErrors] = useState({});
+  const [toast, setToast] = useState(null); // { type: 'success' | 'error', message: string } | null
+  const toastTimeoutRef = useRef(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear field-specific error as user types
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: '' });
+    }
   };
 
   const copyToClipboard = (text, fieldName) => {
@@ -36,91 +34,83 @@ const Contact = () => {
     setTimeout(() => setCopiedField(null), 2500);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-
-    // Check if EmailJS keys exist in environment
-    if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
-      try {
-        // 1. Send notification to Ajay S
-        await emailjs.send(
-          EMAILJS_SERVICE_ID,
-          EMAILJS_TEMPLATE_ID,
-          {
-            from_name: formData.name,
-            from_email: formData.email,
-            subject: formData.subject || `Portfolio Inquiry from ${formData.name}`,
-            message: formData.message,
-            to_email: 'ajayselvam1609@gmail.com'
-          },
-          EMAILJS_PUBLIC_KEY
-        );
-
-        // 2. Trigger Auto-Reply email to sender if template is provided
-        if (EMAILJS_AUTO_REPLY_TEMPLATE_ID) {
-          try {
-            await emailjs.send(
-              EMAILJS_SERVICE_ID,
-              EMAILJS_AUTO_REPLY_TEMPLATE_ID,
-              {
-                to_name: formData.name,
-                to_email: formData.email,
-                user_message: formData.message
-              },
-              EMAILJS_PUBLIC_KEY
-            );
-          } catch (autoErr) {
-            console.warn('Auto-reply template error:', autoErr);
-          }
-        }
-
-        setSubmitStatus('success');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } catch (error) {
-        console.error('EmailJS Error, falling back to FormSubmit:', error);
-        await handleFormSubmitFallback();
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else {
-      // FormSubmit Fallback with built-in auto-response to sender
-      await handleFormSubmitFallback();
+  const showToast = (type, message) => {
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
     }
+    setToast({ type, message });
+    toastTimeoutRef.current = setTimeout(() => {
+      setToast(null);
+    }, 5000);
   };
 
-  const handleFormSubmitFallback = async () => {
-    try {
-      const response = await fetch(FORMSUBMIT_ENDPOINT, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json', 
-          'Accept': 'application/json' 
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          _replyto: formData.email,
-          _subject: `[Portfolio Contact] ${formData.subject || 'Inquiry from ' + formData.name}`,
-          message: formData.message,
-          _autorespond: `Hi ${formData.name},\n\nThank you for reaching out to Ajay S! I have received your message:\n\n"${formData.message}"\n\nI will review your message and reply directly to your email (${formData.email}) shortly.\n\nBest regards,\nAjay S\nData Analyst & Python Developer`,
-          _template: "table",
-          _captcha: false
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success === 'true' || data.success === true || response.ok) {
-        setSubmitStatus('success');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        setSubmitStatus('error');
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
       }
-    } catch (err) {
-      console.error('Contact Form error:', err);
-      setSubmitStatus('error');
+    };
+  }, []);
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.from_name || !formData.from_name.trim()) {
+      newErrors.from_name = 'Name is required';
+    }
+    
+    if (!formData.from_email || !formData.from_email.trim()) {
+      newErrors.from_email = 'Email is required';
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.from_email)) {
+        newErrors.from_email = 'Valid email is required';
+      }
+    }
+    
+    if (!formData.subject || !formData.subject.trim()) {
+      newErrors.subject = 'Subject is required';
+    }
+    
+    if (!formData.message || !formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      await emailjs.sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        form.current,
+        {
+          publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+        }
+      );
+      
+      showToast('success', 'Message sent successfully!');
+      setFormData({
+        from_name: '',
+        from_email: '',
+        company: '',
+        subject: '',
+        message: ''
+      });
+      setErrors({});
+    } catch (error) {
+      console.error('EmailJS submit error:', error);
+      showToast('error', 'Failed to send message. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -145,7 +135,7 @@ const Contact = () => {
         </div>
         
         <p className="text-slate-600 dark:text-slate-400 max-w-2xl mb-12">
-          Have a project in mind, an opportunity, or a data analytics query? Drop a message below and an instant automated acknowledgment will be delivered to your inbox!
+          Have a project in mind, an opportunity, or a data analytics query? Drop a message below and I will get back to you as soon as possible!
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
@@ -154,13 +144,13 @@ const Contact = () => {
             <div className="glass-card p-6 border-l-4 border-accent space-y-4">
               <div className="flex items-center gap-2 text-accent font-semibold text-sm">
                 <Sparkles size={18} />
-                <span>INSTANT AUTO-REPLY ACTIVE</span>
+                <span>DIRECT RESPONSE CHANNEL</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                 Direct Communication Channel
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Messages sent via this form go straight to <strong className="text-slate-800 dark:text-slate-200">ajayselvam1609@gmail.com</strong>. You will receive an immediate automated confirmation email.
+                Messages sent via this form go straight to <strong className="text-slate-800 dark:text-slate-200">ajayselvam1609@gmail.com</strong>. I'll read and respond to your email as soon as possible.
               </p>
             </div>
 
@@ -232,63 +222,99 @@ const Contact = () => {
           
           {/* Main Contact Form */}
           <div className="lg:col-span-3">
-            <form ref={formRef} onSubmit={handleSubmit} className="glass-card p-8 space-y-5 relative">
+            <form ref={form} onSubmit={handleSubmit} noValidate className="glass-card p-8 space-y-5 relative">
               <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   Send a Message
                 </h3>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full">
-                  <ShieldCheck size={14} /> Auto-Reply Enabled
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-full">
+                  <ShieldCheck size={14} /> Secure Submission
                 </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label htmlFor="name" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                  <label htmlFor="from_name" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                     Your Name <span className="text-rose-500">*</span>
                   </label>
                   <input 
                     type="text" 
-                    id="name" 
-                    name="name" 
-                    required
-                    value={formData.name}
+                    id="from_name" 
+                    name="from_name" 
+                    value={formData.from_name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm"
+                    className={`w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border ${
+                      errors.from_name ? 'border-rose-500 focus:ring-rose-500' : 'border-slate-200 dark:border-slate-700 focus:ring-accent'
+                    } text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:border-transparent transition-all text-sm`}
                     placeholder="Alex Morgan"
                   />
+                  {errors.from_name && (
+                    <span className="text-xs text-rose-500 mt-1 block font-medium">
+                      {errors.from_name}
+                    </span>
+                  )}
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                  <label htmlFor="from_email" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                     Your Email <span className="text-rose-500">*</span>
                   </label>
                   <input 
                     type="email" 
-                    id="email" 
-                    name="email" 
-                    required
-                    value={formData.email}
+                    id="from_email" 
+                    name="from_email" 
+                    value={formData.from_email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm"
+                    className={`w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border ${
+                      errors.from_email ? 'border-rose-500 focus:ring-rose-500' : 'border-slate-200 dark:border-slate-700 focus:ring-accent'
+                    } text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:border-transparent transition-all text-sm`}
                     placeholder="alex@example.com"
                   />
+                  {errors.from_email && (
+                    <span className="text-xs text-rose-500 mt-1 block font-medium">
+                      {errors.from_email}
+                    </span>
+                  )}
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="subject" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                  Subject / Reason
-                </label>
-                <input 
-                  type="text" 
-                  id="subject" 
-                  name="subject" 
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm"
-                  placeholder="Data Analyst Opportunity / Collaboration"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label htmlFor="company" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                    Company <span className="text-slate-400 dark:text-slate-500 text-[10px]">(Optional)</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="company" 
+                    name="company" 
+                    value={formData.company}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm"
+                    placeholder="Acme Corp"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="subject" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                    Subject / Reason <span className="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="subject" 
+                    name="subject" 
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border ${
+                      errors.subject ? 'border-rose-500 focus:ring-rose-500' : 'border-slate-200 dark:border-slate-700 focus:ring-accent'
+                    } text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:border-transparent transition-all text-sm`}
+                    placeholder="Collaboration / Opportunity"
+                  />
+                  {errors.subject && (
+                    <span className="text-xs text-rose-500 mt-1 block font-medium">
+                      {errors.subject}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div>
@@ -299,12 +325,18 @@ const Contact = () => {
                   id="message" 
                   name="message" 
                   rows="4"
-                  required
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all resize-none text-sm"
+                  className={`w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border ${
+                    errors.message ? 'border-rose-500 focus:ring-rose-500' : 'border-slate-200 dark:border-slate-700 focus:ring-accent'
+                  } text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:border-transparent transition-all resize-none text-sm`}
                   placeholder="Hi Ajay, I'd like to discuss a data analytics project or opportunity..."
                 ></textarea>
+                {errors.message && (
+                  <span className="text-xs text-rose-500 mt-1 block font-medium">
+                    {errors.message}
+                  </span>
+                )}
               </div>
 
               <button 
@@ -315,56 +347,55 @@ const Contact = () => {
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">
                     <Loader2 size={18} className="animate-spin mr-2" />
-                    Sending Message...
+                    Sending...
                   </span>
                 ) : (
                   <span className="flex items-center justify-center">
                     <Send size={18} className="mr-2 group-hover:translate-x-1 transition-transform" />
-                    Send Message & Get Auto-Reply
+                    Send Message
                   </span>
                 )}
               </button>
-
-              {/* Status Alert Notifications */}
-              <AnimatePresence>
-                {submitStatus === 'success' && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }} 
-                    animate={{ opacity: 1, y: 0 }} 
-                    exit={{ opacity: 0, y: -10 }}
-                    className="p-4 rounded-lg bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 flex items-start gap-3 border border-emerald-200 dark:border-emerald-800/60 shadow-sm"
-                  >
-                    <CheckCircle size={22} className="text-emerald-500 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-semibold text-sm">Message Delivered Successfully!</p>
-                      <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">
-                        Your message was sent to <strong>ajayselvam1609@gmail.com</strong>. An automated confirmation email has also been sent to your inbox.
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-
-                {submitStatus === 'error' && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }} 
-                    animate={{ opacity: 1, y: 0 }} 
-                    exit={{ opacity: 0, y: -10 }}
-                    className="p-4 rounded-lg bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 flex items-start gap-3 border border-rose-200 dark:border-rose-800/60 shadow-sm"
-                  >
-                    <XCircle size={22} className="text-rose-500 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-semibold text-sm">Submission Error</p>
-                      <p className="text-xs text-rose-700 dark:text-rose-400 mt-0.5">
-                        Something went wrong while dispatching the message. Please email me directly at <a href="mailto:ajayselvam1609@gmail.com" className="underline font-bold">ajayselvam1609@gmail.com</a>.
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </form>
           </div>
         </div>
       </motion.div>
+
+      {/* Floating Toast Notification */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className={`fixed bottom-5 right-5 z-50 max-w-sm w-full p-4 rounded-xl shadow-lg border flex items-start gap-3 pointer-events-auto ${
+              toast.type === 'success'
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/90 dark:border-emerald-800 dark:text-emerald-200'
+                : 'bg-rose-50 border-rose-200 text-rose-800 dark:bg-rose-950/90 dark:border-rose-800 dark:text-rose-200'
+            }`}
+          >
+            <div className="shrink-0 mt-0.5">
+              {toast.type === 'success' ? (
+                <CheckCircle className="text-emerald-500" size={20} />
+              ) : (
+                <XCircle className="text-rose-500" size={20} />
+              )}
+            </div>
+            <div className="flex-grow">
+              <p className="font-semibold text-sm">
+                {toast.type === 'success' ? 'Success' : 'Error'}
+              </p>
+              <p className="text-xs mt-0.5 opacity-90">{toast.message}</p>
+            </div>
+            <button
+              onClick={() => setToast(null)}
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors shrink-0 text-sm font-semibold ml-auto"
+            >
+              ×
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
