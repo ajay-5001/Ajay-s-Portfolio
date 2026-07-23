@@ -13,7 +13,7 @@
 
   **A sleek, fast, and fully responsive personal portfolio website for Ajay S — Data Analyst & Python Developer.**
 
-  [View Live Demo](https://ajay-s-portfolio-nine.vercel.app/) · [Report Bug](https://github.com/ajay-5001/Ajay-s-Portfolio/issues) · [Request Feature](https://github.com/ajay-5001/Ajay-s-Portfolio/issues)
+  [View My portfolio](https://ajay-s-portfolio-nine.vercel.app/) · [Report Bug](https://github.com/ajay-5001/Ajay-s-Portfolio/issues) · [Request Feature](https://github.com/ajay-5001/Ajay-s-Portfolio/issues)
 
 </div>
 
